@@ -1,7 +1,12 @@
 import 'package:attacker_kma_app/screen/phone/home.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-void main() => runApp(MyApp());
+
+
+void main() {
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
@@ -17,3 +22,5 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+
+
