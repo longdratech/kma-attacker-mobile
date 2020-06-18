@@ -42,14 +42,12 @@ class MessageWidget extends StatelessWidget {
           )
         ],
       ),
-      title: Padding(
-        padding: EdgeInsets.only(bottom: 6),
-        child: Text(
-          title,
-          style: TextStyle(
-              fontFamily: "Roboto",
-              fontWeight: FontWeight.w500,
-              color: Colors.white),
+      title: Text(
+        title ?? 'No data',
+        style: TextStyle(
+          fontFamily: "Roboto",
+          fontWeight: FontWeight.w500,
+          color: Colors.black,
         ),
       ),
       subtitle: Text(

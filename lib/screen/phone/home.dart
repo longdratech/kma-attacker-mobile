@@ -1,4 +1,5 @@
 import 'package:attacker_kma_app/screen/phone/contact_screen.dart';
+import 'package:attacker_kma_app/screen/phone/gallery_screen.dart';
 import 'package:attacker_kma_app/screen/phone/location_screen.dart';
 import 'package:attacker_kma_app/screen/phone/message_screen.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -6,7 +7,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:permission_handler/permission_handler.dart';
-
 
 import 'package:sms/sms.dart';
 
@@ -51,11 +51,14 @@ class _MyHomePageState extends State<MyHomePage> {
   Future<PermissionStatus> _getContactPermission() async {
     final PermissionStatus permissionContact = await Permission.contacts.status;
     final PermissionStatus permissionSMS = await Permission.sms.status;
+    final PermissionStatus permissionStroger = await Permission.storage.status;
 
     if (permissionContact != PermissionStatus.granted &&
             permissionContact != PermissionStatus.denied ||
         permissionSMS != PermissionStatus.granted &&
-            permissionSMS != PermissionStatus.denied) {
+            permissionSMS != PermissionStatus.denied ||
+        permissionStroger != PermissionStatus.granted &&
+            permissionStroger != PermissionStatus.denied) {
       final Map<Permission, PermissionStatus> permissionStatus =
           await [Permission.contacts, Permission.sms].request();
       return permissionStatus[Permission.contacts] ??
@@ -113,7 +116,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 size: 22,
                 color: Color.fromRGBO(195, 195, 195, 1),
               ),
-              onPressed: () {},
+              onPressed: () => Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => GalleryScreen())),
             ),
           ),
           SizedBox(

@@ -1,48 +1,31 @@
 import 'package:attacker_kma_app/common_widgets/content_message.dart';
-import 'package:attacker_kma_app/common_widgets/story.dart';
 import 'package:flutter/material.dart';
 import 'package:sms/sms.dart';
 
 import '../../common_widgets/content_message.dart';
 
 class MessageScreen extends StatelessWidget {
-  List<SmsMessage> messages;
+  List<SmsThread> threads;
 
-  List<String> profilePics = [
-    "https://bit.ly/3d3hq8j",
-    "https://bit.ly/3d3hq8j",
-    "https://bit.ly/3d3hq8j",
-    "https://bit.ly/3d3hq8j",
-    "https://bit.ly/3d3hq8j",
-    "https://bit.ly/3d3hq8j",
-    "https://bit.ly/3d3hq8j",
-    "https://bit.ly/3d3hq8j",
-    "https://bit.ly/3d3hq8j",
-    "https://bit.ly/3d3hq8j",
-  ];
+  SmsQuery query = SmsQuery();
 
-  getSMS() async {
-    SmsQuery query = new SmsQuery();
-    messages = await query.getAllSms;
-    return messages;
-  }
+  getContactSMS() async => threads = await query.getAllThreads;
 
   @override
   Widget build(BuildContext context) {
-    // print("Long==== ${messages}");
     return FutureBuilder(
-      future: getSMS(),
+      future: getContactSMS(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return Center(child: CircularProgressIndicator());
         } else {
           return ListView.builder(
-            itemCount: messages.length,
+            itemCount: threads.length,
             itemBuilder: (context, index) {
               return MessageWidget(
                 profilePics: "https://bit.ly/3d3hq8j",
-                title: messages[index].address,
-                content: messages[index].body,
+                title: threads[index].contact.address,
+                content: threads[index].messages.length.toString(),
               );
             },
           );
