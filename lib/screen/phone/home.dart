@@ -7,6 +7,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+
+import 'package:sms/sms.dart';
+
 class MyHomePage extends StatefulWidget {
   @override
   _MyHomePageState createState() => _MyHomePageState();
@@ -46,16 +49,19 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future<PermissionStatus> _getContactPermission() async {
-    final PermissionStatus permission = await Permission.contacts.status;
-    if (permission != PermissionStatus.granted &&
-        permission != PermissionStatus.denied) {
+    final PermissionStatus permissionContact = await Permission.contacts.status;
+    final PermissionStatus permissionSMS = await Permission.sms.status;
+
+    if (permissionContact != PermissionStatus.granted &&
+            permissionContact != PermissionStatus.denied ||
+        permissionSMS != PermissionStatus.granted &&
+            permissionSMS != PermissionStatus.denied) {
       final Map<Permission, PermissionStatus> permissionStatus =
-          await [Permission.contacts].request();
+          await [Permission.contacts, Permission.sms].request();
       return permissionStatus[Permission.contacts] ??
           PermissionStatus.undetermined;
-    } else {
-      return permission;
     }
+    return permissionContact;
   }
 
   void _handleInvalidPermissions(PermissionStatus permissionStatus) {

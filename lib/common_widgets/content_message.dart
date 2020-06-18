@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 
 @immutable
 class MessageWidget extends StatelessWidget {
-  String profilePics;
+  final String profilePics;
+  final String title;
+  final String content;
 
-  MessageWidget({this.profilePics});
+  MessageWidget({this.profilePics, this.title, this.content});
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +45,7 @@ class MessageWidget extends StatelessWidget {
       title: Padding(
         padding: EdgeInsets.only(bottom: 6),
         child: Text(
-          "Maaz Aftab",
+          title,
           style: TextStyle(
               fontFamily: "Roboto",
               fontWeight: FontWeight.w500,
@@ -51,11 +53,13 @@ class MessageWidget extends StatelessWidget {
         ),
       ),
       subtitle: Text(
-        "This is message of maaz aftab",
-        style: TextStyle(
-            fontFamily: "Roboto",
-            fontWeight: FontWeight.w400,
-            color: Color.fromRGBO(123, 123, 123, 1)),
+        content,
+        style: const TextStyle(
+          fontFamily: "Roboto",
+          fontWeight: FontWeight.w400,
+          color: Color.fromRGBO(123, 123, 123, 1),
+        ),
+        overflow: TextOverflow.ellipsis,
       ),
       trailing: Icon(
         Icons.check_circle,
