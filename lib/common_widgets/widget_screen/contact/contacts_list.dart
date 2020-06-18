@@ -10,7 +10,7 @@ class ContactListPage extends StatefulWidget {
 }
 
 class _ContactsPageState extends State<ContactListPage> {
-  Iterable<Contact> _contacts;
+  Iterable<Contact> contacts;
 
   @override
   void initState() {
@@ -18,55 +18,52 @@ class _ContactsPageState extends State<ContactListPage> {
     super.initState();
   }
 
-  @override
-  void didChangeDependencies() {
-    getContacts();
-    super.didChangeDependencies();
-  }
+  // @override
+  // void didChangeDependencies() {
+  //   getContacts();
+  //   super.didChangeDependencies();
+  // }
 
-  Future<void> getContacts() async {
-    //We already have permissions for contact when we get to this page, so we
-    // are now just retrieving it
-    final Iterable<Contact> contacts = await ContactsService.getContacts();
-    setState(() {
-      _contacts = contacts;
-    });
-  }
+  Future<void> getContacts() async =>
+      contacts = await ContactsService.getContacts();
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: _contacts.isEmpty || _contacts == null
-          //Build a list view of all contacts, displaying their avatar and
-          // display name
-          ? Center(child: const CircularProgressIndicator())
-          : ListView.builder(
-              itemCount: _contacts?.length ?? 0,
-              itemBuilder: (BuildContext context, int index) {
-                Contact contact = _contacts?.elementAt(index);
-                return ListTile(
-                  contentPadding:
-                      const EdgeInsets.symmetric(vertical: 2, horizontal: 18),
-                  leading: (contact.avatar != null && contact.avatar.isNotEmpty)
-                      ? CircleAvatar(
-                          backgroundImage: MemoryImage(contact.avatar))
-                      : CircleAvatar(
-                          child: Text(contact.initials()),
-                          backgroundColor: Theme.of(context).accentColor,
-                        ),
-                  title: Text(contact.displayName ?? ''),
-                  //This can be further expanded to showing contacts detail
-                  // onPressed().
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      PhoneButton(phoneNumbers: contact.phones),
-                      SmsButton(phoneNumbers: contact.phones)
-                    ],
-                  ),
-                );
-              },
-            ),
+    return FutureBuilder(
+      future: getContacts(),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return Center(child: CircularProgressIndicator());
+        }
+        return Container(
+          child: ListView.builder(
+            itemCount: contacts?.length ?? 0,
+            itemBuilder: (BuildContext context, int index) {
+              Contact contact = contacts?.elementAt(index);
+              return ListTile(
+                contentPadding:
+                    const EdgeInsets.symmetric(vertical: 2, horizontal: 18),
+                leading: (contact.avatar != null && contact.avatar.isNotEmpty)
+                    ? CircleAvatar(backgroundImage: MemoryImage(contact.avatar))
+                    : CircleAvatar(
+                        child: Text(contact.initials()),
+                        backgroundColor: Theme.of(context).accentColor,
+                      ),
+                title: Text(contact.displayName ?? ''),
+                //This can be further expanded to showing contacts detail
+                // onPressed().
+                // trailing: Row(
+                //   mainAxisSize: MainAxisSize.min,
+                //   children: <Widget>[
+                //     PhoneButton(phoneNumbers: contact.phones),
+                //     SmsButton(phoneNumbers: contact.phones)
+                //   ],
+                // ),
+              );
+            },
+          ),
+        );
+      },
     );
   }
 }
