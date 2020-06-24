@@ -15,14 +15,20 @@ class MessageScreen extends StatelessWidget {
 
   SmsQuery query = SmsQuery();
 
-  MessageModel messageModel;
+  MessageModel messageModel = MessageModel();
 
   getContactSMS() async => threads = await query.getAllThreads;
 
-  messageModel
+  String address;
+
+  List<Message> listMessage = [];
 
   @override
   Widget build(BuildContext context) {
+    threads.forEach((element) {
+      listMessage.add(element.contact.address.toString(), element.messages);
+    });
+
     return FutureBuilder(
       future: getContactSMS(),
       builder: (context, snapshot) {
@@ -30,7 +36,8 @@ class MessageScreen extends StatelessWidget {
           return Center(child: CircularProgressIndicator());
         } else {
           return BlocBuilder(
-            bloc: _messageBloc = MessageBloc()..add(SendMessage(address: threads.forEach((element) => element.contact.address))),
+            bloc: _messageBloc = MessageBloc()
+              ..add(SendMessage(messages: threads.addAll(th))),
             child: Column(
               children: [
                 Expanded(
