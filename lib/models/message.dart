@@ -1,39 +1,23 @@
-import 'package:json_annotation/json_annotation.dart';
+import 'package:sms/sms.dart';
 
-part 'message.g.dart';
-
-@JsonSerializable()
-class Message {
-  @JsonKey(name: 'address')
+class MessageModel {
   String address;
-  @JsonKey(name: 'text')
-  List<String> texts;
+  List<String> content;
 
-  set setAddress(String address) => this.address = address;
-  String get getAddress => this.address;
+  MessageModel({this.address, this.content});
 
-  set setTexts(List<String> texts) => this.texts = texts;
-  List<String> get getTexts => this.texts;
+  MessageModel.fromJson(Map<String, dynamic> json)
+      : address = json['address'],
+        content = json['text'];
 
-  Message({this.address, this.texts});
-
-  factory Message.fromJson(Map<String, dynamic> json) => _$MessageFromJson(json);
-
-  Map<String, dynamic> toJson() => _$MessageToJson(this);
+  Map<String, dynamic> toJson() => {
+        'address': address,
+        'text': content,
+      };
 }
 
-@JsonSerializable()
-class MessageModel {
-  @JsonKey(name: 'message')
-  List<Message> listMessage;
+class Mess {
+  List<MessageModel> listMessage;
 
-  set setMessages(List<Message> messages) => this.listMessage = messages;
-
-  get getMessages => this.listMessage;
-
-  MessageModel({this.listMessage});
-
-  factory MessageModel.fromJson(Map<String, dynamic> json) => _$MessageModelFromJson(json);
-
-  Map<String, dynamic> toJson() => _$MessageModelToJson(this);
+  Mess({this.listMessage});
 }
